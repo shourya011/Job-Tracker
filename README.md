@@ -157,8 +157,8 @@ Job-Application-Tracker-Portal/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Job-Application-Tracker-Portal.git
-cd Job-Application-Tracker-Portal
+git clone https://github.com/shourya011/Job-Tracker.git
+cd Job-Tracker
 ```
 
 ### 2. Backend setup
@@ -166,18 +166,26 @@ cd Job-Application-Tracker-Portal
 ```bash
 cd server
 npm install
-cp .env.example .env
-# Edit .env with your MongoDB URI and a secret JWT key
-npm run dev
+cp .env.example .env        # then edit .env (see step 4)
+npm run dev                 # starts on http://localhost:5000
 ```
 
-### 3. Frontend setup
+> ⚠️ The server exits at startup if MongoDB is unreachable. Make sure
+> MongoDB is running (or `MONGO_URI` points to Atlas) **before** `npm run dev`.
+> Successful startup prints `MongoDB connected: ...` and `Server running on port 5000`.
+
+### 3. Frontend setup (new terminal)
 
 ```bash
 cd client
 npm install
-npm start
+npm start                   # starts on http://localhost:3000
 ```
+
+The client uses the `"proxy": "http://localhost:5000"` setting in
+`client/package.json`, so the backend must be running on port 5000.
+Do **not** set `REACT_APP_API_URL` to an absolute URL in development —
+leave it unset so the proxy is used (avoids CORS issues entirely).
 
 ### 4. Environment variables (`server/.env`)
 
@@ -193,6 +201,31 @@ NODE_ENV=development
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:5000
+
+### 6. (Optional) Seed demo data
+
+With the backend configured and MongoDB running:
+
+```bash
+cd server
+npm run seed
+```
+
+This creates a demo account and 10 sample applications.
+Login with **demo@jobtrack.dev / demo1234** (or register your own account at `/register`).
+
+---
+
+## Troubleshooting (run with no mistakes)
+
+| Symptom | Cause / Fix |
+| ------- | ----------- |
+| Server exits immediately with `MongoDB connection error` | MongoDB isn't running or `MONGO_URI` is wrong. Start `mongod` locally, or use an Atlas URI like `mongodb+srv://user:pass@cluster.mongodb.net/job_tracker`. |
+| `cp: cannot stat '.env.example'` | You ran it in the wrong folder — the file lives in `server/`. Run `cp .env.example .env` from inside `server/`. |
+| Frontend shows `Proxy error ... ECONNREFUSED` | The backend on port 5000 isn't running. Start it first (`cd server && npm run dev`). |
+| Login fails with `Invalid credentials` | Wrong email/password, or you seeded with a different DB than the one in `.env`. Re-run `npm run seed` or register a new user. |
+| Port 3000/5000 already in use | Kill the other process or change `PORT` in `server/.env` (and the `proxy` field in `client/package.json`). |
+| Old Node version errors | Use Node.js 18+ (`node -v`). |
 
 ---
 
@@ -222,7 +255,7 @@ NODE_ENV=development
 
 ### Application
 
-![application]docs/screenshots/Application.png
+![application](docs/screenshots/Application.png)
 
 ### Reports and Analytics
 
