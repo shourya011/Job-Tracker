@@ -1,0 +1,14 @@
+{
+  "name": "jobtrack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JobTrack — Job Application Tracker Portal (root helper scripts)",
+  "scripts": {
+    "install:all": "npm --prefix server ci && npm --prefix client ci",
+    "seed": "npm --prefix server run seed",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client start",
+    "start:server": "npm --prefix server start",
+    "build:client": "npm --prefix client run build"
+  }
+}
