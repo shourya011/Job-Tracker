@@ -17,7 +17,14 @@ connectDB();
 const app = express();
 
 // ── Middleware ──────────────────────────────────────────────
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+// Allowed browser origins for CORS. Override with CLIENT_ORIGIN (comma separated),
+// e.g. CLIENT_ORIGIN=http://localhost:3000,http://192.168.1.10:3000
+const allowedOrigins = (process.env.CLIENT_ORIGIN || 'http://localhost:3000,http://127.0.0.1:3000')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json());
 app.use(morgan('dev'));
 
